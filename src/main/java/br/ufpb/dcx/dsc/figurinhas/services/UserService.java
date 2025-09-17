@@ -8,7 +8,10 @@ import br.ufpb.dcx.dsc.figurinhas.repository.AlbumRepository;
 import br.ufpb.dcx.dsc.figurinhas.repository.FigurinhaRepository;
 import br.ufpb.dcx.dsc.figurinhas.repository.PhotoRepository;
 import br.ufpb.dcx.dsc.figurinhas.repository.UserRepository;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 
 import java.util.Collection;
 import java.util.List;
@@ -16,17 +19,24 @@ import java.util.Optional;
 
 @Service
 public class UserService {
-    private UserRepository userRepository;
-    private PhotoRepository photoRepository;
+    private final UserRepository userRepository;
+    private final PhotoRepository photoRepository;
+    private final AlbumRepository albumRepository;
+    private final FigurinhaRepository figurinhaRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    private AlbumRepository albumRepository;
-    private FigurinhaRepository figurinhaRepository;
 
-    public UserService(FigurinhaRepository figurinhaRepository, AlbumRepository albumRepository, UserRepository userRepository, PhotoRepository photoRepository){
-        this.userRepository = userRepository;
-        this.photoRepository = photoRepository;
+    public UserService(
+            AlbumRepository albumRepository,
+            FigurinhaRepository figurinhaRepository,
+            PhotoRepository photoRepository,
+            UserRepository userRepository,
+            BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.albumRepository = albumRepository;
         this.figurinhaRepository = figurinhaRepository;
+        this.photoRepository = photoRepository;
+        this.userRepository = userRepository;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     public List<User> listUsers() {
@@ -40,7 +50,7 @@ public class UserService {
     }
 
     public User createUser(User user){
-
+        user.setSenha(bCryptPasswordEncoder.encode(user.getSenha()));
         Photo photo = new Photo("www.exemplo.com/foto.png");
         photoRepository.save(photo);
         user.setPhoto(photo);
@@ -59,6 +69,9 @@ public class UserService {
     }
 
     public void deleteUser(Long userId) {
+        User u = userRepository.findById(userId)
+                .orElseThrow(() -> new UsernameNotFoundException("User " + userId + " not found"));
+        userRepository.delete(u);
     /*    Optional<User> uOpt = userRepository.findById(userId);
         User u = uOpt.get();
         if(uOpt.isPresent()){

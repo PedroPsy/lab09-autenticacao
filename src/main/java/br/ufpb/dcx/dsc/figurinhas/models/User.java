@@ -12,15 +12,25 @@ public class User {
     @Column(name = "user_id")
     private Long userId;
 
-    @Column(name = "nome")
+    @Column(name = "nome", nullable = false, unique = true)
     private String nome;
 
     @Column(name = "email")
     private String email;
+    @Column(name = "senha" , nullable = false)
+    private String senha;
 
     @OneToOne
     @JoinColumn(name = "photo_id")
     private Photo photo;
+
+    public String getSenha() {
+        return senha;
+    }
+
+    public void setSenha(String senha) {
+        this.senha = senha;
+    }
 
     @OneToMany(mappedBy = "user")
     private List<Album> albuns;

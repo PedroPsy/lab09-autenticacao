@@ -10,7 +10,7 @@ public class UserDTO {
 
     private Long id;
     @NotBlank
-    private String nome;
+    private String username;
     @Email
     private String email;
 
@@ -26,12 +26,12 @@ public class UserDTO {
         this.id = id;
     }
 
-    public String getNome() {
-        return nome;
+    public String getUsername() {
+        return username;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getEmail() {
@@ -54,7 +54,7 @@ public class UserDTO {
     public String toString() {
         return "UserDTO{" +
                 "id=" + id +
-                ", nome='" + nome + '\'' +
+                ", nome='" + username + '\'' +
                 ", email='" + email + '\'' +
                 ", photo=" + photo +
                 '}';

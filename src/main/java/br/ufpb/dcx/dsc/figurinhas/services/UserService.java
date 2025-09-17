@@ -62,7 +62,7 @@ public class UserService {
         if(userOpt.isPresent()){
             User user = userOpt.get();
             user.setEmail(u.getEmail());
-            user.setNome(u.getNome());
+            user.setUsername(u.getUsername());
             return userRepository.save(user);
         }
         return null;
